@@ -21,12 +21,15 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  bankAccount: {
+  bank: [
+  {  accountNumber: {
+      type : String
+    },
+    bankType : {
     type: String,
-  },
-  bankType: {
-    type: String,
-  },
+    }
+  }
+  ], 
   regNumber: {
     type: String,
   },

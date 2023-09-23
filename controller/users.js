@@ -45,13 +45,13 @@ export const login = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ phone }).select("+password");
 
   if (!user) {
-    throw new MyError("Имэйл болон нууц үгээ зөв оруулна уу", 401);
+    throw new MyError("Утасны дугаар болон нууц үгээ зөв оруулна уу", 401);
   }
 
   const ok = await user.checkPassword(password);
 
   if (!ok) {
-    throw new MyError("Имэйл болон нууц үгээ зөв оруулна уу", 401);
+    throw new MyError("Утасны дугаар болон нууц үгээ зөв оруулна уу", 401);
   }
 
   const token = user.getJsonWebToken();
@@ -123,6 +123,40 @@ export const createUser = asyncHandler(async (req, res, next) => {
   });
 });
 
+export const addBank = asyncHandler(async (req, res, next) => {
+  try {
+    console.log("sad",req.userId)
+    const user = await User.findById(req.userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found',
+      });
+    }
+
+    // Push the new bank account information into the user's banks array
+    user.bank.push({
+      accountNumber: req.body.bank.accountNumber,
+      bankType: req.body.bank.bankType,
+    });
+
+    // Save the updated user with the new bank account information
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      success: true,
+      data: updatedUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+    });
+  }
+});
+
+
 export const updateUser = asyncHandler(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -153,3 +187,11 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
     data: user,
   });
 });
+
+export const deleteOwnAccount = asyncHandler(async (req,res,next)=>{
+const user = await User.findById(req.userId)
+user.remove();
+res.status(200).json({
+  success : true,
+})
+})

@@ -21,6 +21,10 @@ const TransactionSchema = new mongoose.Schema({
       type: Date,
       default: Date.now,
     },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
     transactionType : {
         type : String,
     },
@@ -30,7 +34,8 @@ const TransactionSchema = new mongoose.Schema({
     },
     type : {
       type : String,
-      default : "Хүлээгдэж байна",
+      enum : ["Pending","Success","Canceled"],
+      default : "Pending",
     },
     isPaid : {
       type : Boolean,

@@ -11,12 +11,12 @@ export const getTransactions = asyncHandler(async (req, res, next) => {
     const sort = req.query.sort;
     const select = req.query.select;
   
-    const startDate = req.query.bonusPaidDate;
+    const startDate = req.query.startDate;
 
-    ["select", "sort", "page", "limit"].forEach((el) => delete req.query[el]);
+    ["select", "sort", "page", "limit", "startDate"].forEach((el) => delete req.query[el]);
   
     const query = { ...req.query };
-    if (bonusPaidDate) {
+    if (startDate) {
       query.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
     }
   
@@ -56,6 +56,61 @@ export const getTransactions = asyncHandler(async (req, res, next) => {
       res.status(200).json({
         success : true,
         trans : transaction,
+      })
+    });
+
+    export const confirmTransaction = asyncHandler(async ( req, res, next) => {
+      const transaction = await Transaction.findByIdAndUpdate(req.params.id ,req.body);
+      if(!transaction) {
+        throw new Error("Харилцагчийн мэдээлэл илэрсэнгүй",400);
+      }
+      if(transaction) {
+        transaction.save()
+      }
+      const userId = transaction.findUser
+      const userBonus =await User.findById(userId)
+      const calcTransaction = userBonus.bonusAmount*1 - transaction.bonusAmount*1
+      if(transaction.isPaid === "true") {
+        const user = await User.findByIdAndUpdate(userId, {bonusAmount : calcTransaction} ,{
+        new: true,
+        runValidators: true,
+         
+      })
+       await user.save()
+}
+      res.status(200).json({
+        success : true,
+        trans : transaction,
+      })
+    });
+
+    export const confirmAllTrans = asyncHandler(async ( req, res, next) => {
+      // const transaction = await Transaction.findByIdAndUpdate(req.params.id ,req.body);
+      const findSuccessTransaction = await Transaction.find({findUser : req.params.id , type: "Success" });
+      const totalAmount = findSuccessTransaction.reduce((accumulator, item) => {
+        return accumulator + item.bonusAmount;
+      }, 0);
+      console.log("totalamount",totalAmount)
+      const changeType = await Transaction.updateMany({findUser : req.userId},{isPaid : "true"});
+      await changeType.save();
+      const userBonus =await User.findById(req.params.id);
+      const calcTransaction = userBonus.bonusAmount*1 - totalAmount*1;
+      const changeBalance = await User.findByIdAndUpdate(req.params.id , {bonusAmount : calcTransaction});
+      await changeBalance.save()
+      // console.log("userId",userId);
+      // console.log("userBOnus",userBonus.bonusAmount);
+      // console.log("calctrans",calcTransaction);
+//       if(transaction.isPaid === "true") {
+//         const user = await User.findByIdAndUpdate(userId, {bonusAmount : calcTransaction} ,{
+//         new: true,
+//         runValidators: true,
+         
+//       })
+//        await user.save()
+// }
+      res.status(200).json({
+        success : true,
+        total : totalAmount
       })
     });
 
