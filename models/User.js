@@ -22,14 +22,15 @@ const UserSchema = new mongoose.Schema({
     unique: true,
   },
   bank: [
-  {  accountNumber: {
-      type : String
+    {
+      accountNumber: {
+        type: String,
+      },
+      bankType: {
+        type: String,
+      },
     },
-    bankType : {
-    type: String,
-    }
-  }
-  ], 
+  ],
   regNumber: {
     type: String,
   },
@@ -45,13 +46,13 @@ const UserSchema = new mongoose.Schema({
     select: false,
   },
   bonusAmount: {
-  type: Number,
-  default: 0
+    type: Number,
+    default: 0,
   },
   transactionAmount: {
     type: Number,
-    default: 0
-    },
+    default: 0,
+  },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {

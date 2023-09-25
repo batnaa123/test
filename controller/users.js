@@ -16,9 +16,9 @@ export const authMeUser = asyncHandler(async (req, res) => {
 
 // register
 export const register = asyncHandler(async (req, res, next) => {
-  const findByPhone = await User.findOne({phone : req.body.phone});
-  if(findByPhone) {
-  throw new Error("Утасны дугаар бүртгэгдсэн байна", 401)
+  const findByPhone = await User.findOne({ phone: req.body.phone });
+  if (findByPhone) {
+    throw new Error("Утасны дугаар бүртгэгдсэн байна", 401);
   }
 
   const user = await User.create(req.body);
@@ -125,13 +125,13 @@ export const createUser = asyncHandler(async (req, res, next) => {
 
 export const addBank = asyncHandler(async (req, res, next) => {
   try {
-    console.log("sad",req.userId)
+    console.log("sad", req.userId);
     const user = await User.findById(req.userId);
-    
+
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'User not found',
+        error: "User not found",
       });
     }
 
@@ -151,11 +151,10 @@ export const addBank = asyncHandler(async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Internal server error',
+      error: "Internal server error",
     });
   }
 });
-
 
 export const updateUser = asyncHandler(async (req, res, next) => {
   const user = await User.findByIdAndUpdate(req.params.id, req.body, {
@@ -188,10 +187,10 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const deleteOwnAccount = asyncHandler(async (req,res,next)=>{
-const user = await User.findById(req.userId)
-user.remove();
-res.status(200).json({
-  success : true,
-})
-})
+export const deleteOwnAccount = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.userId);
+  user.remove();
+  res.status(200).json({
+    success: true,
+  });
+});

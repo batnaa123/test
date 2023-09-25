@@ -1,7 +1,6 @@
 import { verify } from "jsonwebtoken";
 import asyncHandler from "./asyncHandle.js";
-// import MyError from "../utils/myError.js";
-import MyError from "../../Sedu-BA/utils/myError.js";
+import MyError from "../utils/myErrors.js";
 
 export const protect = asyncHandler(async (req, res, next) => {
   // console.log(req.headers);
