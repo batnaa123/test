@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import express  from "express";
+import express from "express";
 import rfs from "rotating-file-stream";
 import morgan from "morgan";
 import logger from "./middleware/logger.js";
@@ -14,7 +14,7 @@ import colors from "colors";
 // import categoriesRoutes from "./routes/categories.js";
 // import articlesRoutes from "./routes/articles.js";
 import userRoutes from "./routes/user.js";
-import transactionRoutes from "./routes/transaction.js"
+import transactionRoutes from "./routes/transaction.js";
 // import adsRoutes from "./routes/ads.js";
 // import postsRoutes from "./routes/posts.js";
 // import commentsRoutes from "./routes/comments.js";
@@ -33,13 +33,11 @@ const app = express();
 // MongoDB өгөгдлийн сантай холбогдох
 connectDB();
 
-// Манай рест апиг дуудах эрхтэй сайтуудын жагсаалт :
-// var whitelist = [
-//   "http://localhost:3000",
-//   "https://www.sedu.mn",
-//   "https://sedu.mn",
-//   "http://192.168.1.8:3000",
-// ];
+var whitelist = [
+  "http://localhost:3000",
+  "http://139.59.115.72",
+  "http://192.168.1.8:3000",
+];
 
 // Өөр домэйн дээр байрлах клиент вэб аппуудаас шаардах шаардлагуудыг энд тодорхойлно
 var corsOptions = {
